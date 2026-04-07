@@ -130,9 +130,9 @@ export const ProblemDetailView: React.FC<ProblemDetailViewProps> = ({ problemId,
   if (!problem) return <div className="p-12 text-center text-slate-500 font-mono text-xs">PROBLEM NOT FOUND</div>;
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-[calc(100vh-12rem)]">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:h-[calc(100vh-12rem)]">
       {/* Left Column: Problem Description */}
-      <div className="flex flex-col gap-6 overflow-y-auto pr-2 custom-scrollbar">
+      <div className="flex flex-col gap-6 lg:overflow-y-auto pr-2 custom-scrollbar">
         <div className="bg-surface-container-low rounded-xl border border-outline-variant/10 p-8 space-y-6">
           <div className="flex items-center justify-between">
             <button onClick={onBack} className="text-xs font-mono text-primary hover:underline flex items-center gap-1">
@@ -283,7 +283,7 @@ export const ProblemDetailView: React.FC<ProblemDetailViewProps> = ({ problemId,
       </div>
 
       {/* Right Column: Code Editor & Console */}
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-6 min-h-[600px] lg:min-h-0">
         <div className="flex-1 bg-[#1e1e1e] rounded-xl border border-outline-variant/10 flex flex-col overflow-hidden">
           <div className="px-6 py-3 bg-[#252526] border-b border-outline-variant/5 flex items-center justify-between">
             <div className="flex items-center gap-4">

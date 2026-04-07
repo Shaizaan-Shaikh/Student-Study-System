@@ -53,7 +53,8 @@ export const ProblemList: React.FC<ProblemListProps> = ({ problems, onSelect }) 
       </div>
 
       <div className="bg-surface-container-low rounded-xl border border-outline-variant/10 overflow-hidden">
-        <div className="overflow-x-auto">
+        {/* Desktop Table */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-surface-container-highest/50 border-b border-outline-variant/10">
@@ -112,16 +113,57 @@ export const ProblemList: React.FC<ProblemListProps> = ({ problems, onSelect }) 
                   </td>
                 </tr>
               ))}
-              {filteredProblems.length === 0 && (
-                <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-slate-500 font-headline">
-                    No problems found for this difficulty level.
-                  </td>
-                </tr>
-              )}
             </tbody>
           </table>
         </div>
+
+        {/* Mobile Cards */}
+        <div className="md:hidden divide-y divide-outline-variant/10">
+          {filteredProblems.map((p) => (
+            <div 
+              key={p.id} 
+              onClick={() => onSelect(p.id)}
+              className="p-6 hover:bg-surface-container transition-colors space-y-4"
+            >
+              <div className="flex items-start justify-between">
+                <div className="flex items-center gap-3">
+                  {p.solved ? (
+                    <CheckCircle2 className="w-5 h-5 text-secondary" />
+                  ) : (
+                    <Circle className="w-5 h-5 text-slate-600" />
+                  )}
+                  <h3 className="text-sm font-bold text-slate-200">{p.title}</h3>
+                </div>
+                <span className={cn(
+                  "text-[8px] px-2 py-0.5 rounded-full font-bold uppercase tracking-widest",
+                  p.difficulty.toLowerCase() === 'easy' ? "text-secondary bg-secondary/10" :
+                  p.difficulty.toLowerCase() === 'medium' ? "text-tertiary bg-tertiary/10" :
+                  p.difficulty.toLowerCase() === 'hard' ? "text-error bg-error/10" :
+                  "text-primary bg-primary/10"
+                )}>
+                  {p.difficulty}
+                </span>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div className="flex flex-wrap gap-1">
+                  {p.tags.map((tag: string) => (
+                    <span key={tag} className="text-[8px] px-1.5 py-0.5 bg-surface-container-highest text-slate-500 rounded uppercase">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                <span className="text-[10px] text-slate-500 uppercase font-mono">{p.platform}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {filteredProblems.length === 0 && (
+          <div className="px-6 py-12 text-center text-slate-500 font-headline">
+            No problems found for this difficulty level.
+          </div>
+        )}
       </div>
     </div>
   );

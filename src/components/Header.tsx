@@ -1,14 +1,25 @@
 import React from 'react';
-import { Search, Bell, Terminal, LogIn, LogOut } from 'lucide-react';
+import { Search, Bell, Terminal, LogIn, LogOut, Menu, X } from 'lucide-react';
 import { useFirebase } from '../context/FirebaseContext';
 
-export const Header: React.FC = () => {
+interface HeaderProps {
+  onToggleSidebar?: () => void;
+  isSidebarOpen?: boolean;
+}
+
+export const Header: React.FC<HeaderProps> = ({ onToggleSidebar, isSidebarOpen }) => {
   const { user, logout } = useFirebase();
 
   return (
-    <header className="fixed top-0 left-0 w-full z-[60] flex justify-between items-center px-6 h-16 bg-background/80 backdrop-blur-md border-b border-outline-variant/10">
-      <div className="flex items-center gap-8">
-        <span className="text-xl font-headline font-black text-primary tracking-tight">OBSERVATORY</span>
+    <header className="fixed top-0 left-0 w-full z-[60] flex justify-between items-center px-4 md:px-6 h-16 bg-background/80 backdrop-blur-md border-b border-outline-variant/10">
+      <div className="flex items-center gap-4 md:gap-8">
+        <button 
+          onClick={onToggleSidebar}
+          className="lg:hidden p-2 text-slate-400 hover:text-primary transition-colors"
+        >
+          {isSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+        </button>
+        <span className="text-lg md:text-xl font-headline font-black text-primary tracking-tight">OBSERVATORY</span>
         <div className="hidden md:flex items-center bg-surface-container-lowest px-4 py-1.5 rounded-full border border-outline-variant/15">
           <Search className="text-slate-500 w-4 h-4 mr-2" />
           <input 

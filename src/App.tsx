@@ -35,6 +35,7 @@ type View = 'dashboard' | 'learning-path' | 'problems' | 'problem-detail' | 'fri
 export default function App() {
   const { user, loading: authLoading } = useFirebase();
   const [currentView, setCurrentView] = useState<View>('dashboard');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [selectedProblemId, setSelectedProblemId] = useState<string | null>(null);
   const [backendData, setBackendData] = useState<any>(null);
   const [problems, setProblems] = useState<any[]>([]);
@@ -292,12 +293,17 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background text-slate-200 selection:bg-primary selection:text-on-primary">
-      <Header />
+      <Header onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} isSidebarOpen={isSidebarOpen} />
       
-      <Sidebar currentView={currentView} onViewChange={setCurrentView} />
+      <Sidebar 
+        currentView={currentView} 
+        onViewChange={setCurrentView} 
+        isOpen={isSidebarOpen} 
+        onClose={() => setIsSidebarOpen(false)} 
+      />
       
-      <main className="pl-64 pt-20 pb-12">
-        <div className="px-8 max-w-7xl mx-auto">
+      <main className="lg:pl-64 pt-20 pb-12 transition-all duration-300">
+        <div className="px-4 md:px-8 max-w-7xl mx-auto">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentView}
