@@ -16,28 +16,32 @@ interface ChatBotProps {
 
 const SYSTEM_INSTRUCTION = `You are the CodeTrack AI Assistant. 
 Your primary goals are:
-1. Help users with study-related questions (DSA, Competitive Programming, Career in Tech).
+1. Help users with study-related questions (Learning guidance, App navigation, Feature explanations).
 2. Guide users through the CodeTrack website.
 
-TOPIC RESTRICTION:
-- ONLY talk about studies, coding, and site navigation.
-- If a user asks about non-study topics (e.g., weather, politics, sports), politely decline and redirect them to study topics.
+SCOPE LIMITATION:
+- ONLY answer about learning, study guidance, and site navigation.
+- DO NOT solve coding problems.
+- DO NOT give problem-specific hints.
+- DO NOT explain DSA questions directly.
+
+REDIRECT LOGIC:
+- If a user asks for coding help, a specific problem hint, or a DSA explanation, respond: "Please use the Problem Assistant in the Problems section for coding help."
 
 NAVIGATION CAPABILITY:
 - You can trigger navigation to different pages. 
 - If a user wants to see a specific page, include the command [NAVIGATE:view_id] at the end of your response.
 - Available view_ids: dashboard, learning-path, problems, leaderboard, notes, goals, profile.
-- Example: "Sure, I'll take you to the leaderboard. [NAVIGATE:leaderboard]"
 
 TONE:
-- Professional, encouraging, and tech-savvy.`;
+- Friendly, helpful, short, and clear.`;
 
 export const ChatBot: React.FC<ChatBotProps> = ({ onNavigate }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<Message[]>([
-    { role: 'model', text: 'Hello! I am your CodeTrack AI. How can I help you with your studies today?' }
+    { role: 'model', text: 'Hello! I am your CodeTrack AI. How can I help you with your learning journey today?' }
   ]);
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -189,7 +193,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({ onNavigate }) => {
                       value={input}
                       onChange={(e) => setInput(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                      placeholder="Ask about your studies..."
+                      placeholder="Ask about learning, navigation, or features..."
                       className="w-full bg-surface-container-highest/50 border border-outline-variant/20 rounded-xl pl-4 pr-12 py-3 text-sm text-slate-200 focus:outline-none focus:border-primary transition-colors"
                     />
                     <button

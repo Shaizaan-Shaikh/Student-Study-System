@@ -226,17 +226,18 @@ export default function App() {
         }} />
       </div>
 
+      <InsightsSection />
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2">
-          <PerformanceChart />
-        </div>
         <div className="lg:col-span-1">
           <GoalsSection />
         </div>
+        <div className="lg:col-span-2">
+          <WeeklyChallenges />
+        </div>
       </div>
 
-      <InsightsSection />
-      <WeeklyChallenges />
+      <PerformanceChart />
     </motion.div>
   );
 

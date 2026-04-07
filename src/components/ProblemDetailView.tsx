@@ -33,6 +33,9 @@ export const ProblemDetailView: React.FC<ProblemDetailViewProps> = ({ problemId,
   const [running, setRunning] = useState(false);
   const [chatInput, setChatInput] = useState('');
   const [chatHistory, setChatHistory] = useState<any[]>([]);
+  const [customInput, setCustomInput] = useState<string>('');
+  const [assistantData, setAssistantData] = useState<any>(null);
+  const [assistantTab, setAssistantTab] = useState<'hints' | 'approach' | 'complexity' | 'edge-cases'>('hints');
   const [activeTab, setActiveTab] = useState<'description' | 'submissions'>('description');
 
   const templates = {
@@ -67,7 +70,7 @@ export const ProblemDetailView: React.FC<ProblemDetailViewProps> = ({ problemId,
       const res = await fetch('/api/problems/run', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ student_id: user.id, problem_id: problemId, code, language })
+        body: JSON.stringify({ student_id: user.id, problem_id: problemId, code, language, input: customInput })
       });
       const data = await res.json();
       setOutput(data.data);
@@ -100,25 +103,28 @@ export const ProblemDetailView: React.FC<ProblemDetailViewProps> = ({ problemId,
   };
 
   const askAssistant = async () => {
-    if (!chatInput.trim() || !user) return;
-    const userMsg = chatInput;
-    setChatInput('');
-    setChatHistory(prev => [...prev, { role: 'user', text: userMsg }]);
-
+    if (!user) return;
+    setLoading(true);
     try {
       const res = await fetch('/api/problems/assistant', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ student_id: user.id, problem_id: problemId, question: userMsg })
+        body: JSON.stringify({ student_id: user.id, problem_id: problemId, question: 'get_guidance' })
       });
       const data = await res.json();
       if (data.success) {
-        setChatHistory(prev => [...prev, { role: 'assistant', text: data.data.explanation, hint: data.data.hint, approach: data.data.approach }]);
+        setAssistantData(data.data);
       }
     } catch (err) {
       console.error("Failed to ask assistant", err);
+    } finally {
+      setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (problemId) askAssistant();
+  }, [problemId]);
 
   if (loading) return <div className="p-12 text-center text-slate-500 font-mono text-xs animate-pulse">LOADING PROBLEM ARCHITECTURE...</div>;
   if (!problem) return <div className="p-12 text-center text-slate-500 font-mono text-xs">PROBLEM NOT FOUND</div>;
@@ -169,53 +175,109 @@ export const ProblemDetailView: React.FC<ProblemDetailViewProps> = ({ problemId,
           </div>
         </div>
 
-        {/* AI Assistant Chat */}
-        <div className="bg-surface-container-low rounded-xl border border-outline-variant/10 flex flex-col h-[400px]">
-          <div className="px-6 py-4 border-b border-outline-variant/5 flex items-center gap-2">
-            <HelpCircle className="w-4 h-4 text-primary" />
-            <h3 className="text-sm font-bold text-slate-200 uppercase tracking-widest">AI Problem Assistant</h3>
-          </div>
-          
-          <div className="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar">
-            {chatHistory.length === 0 && (
-              <div className="text-center py-8">
-                <Lightbulb className="w-8 h-8 text-slate-600 mx-auto mb-3" />
-                <p className="text-xs text-slate-500 font-mono uppercase">Ask for a hint, approach, or explanation</p>
+        {/* AI Assistant Guidance */}
+        <div className="bg-surface-container-low rounded-xl border border-outline-variant/10 flex flex-col min-h-[400px]">
+          <div className="px-6 py-4 border-b border-outline-variant/5 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <HelpCircle className="w-4 h-4 text-primary" />
+              <h3 className="text-sm font-bold text-slate-200 uppercase tracking-widest">AI Problem Assistant</h3>
+            </div>
+            {assistantData && (
+              <div className="flex gap-1">
+                {assistantData.concepts.slice(0, 2).map((c: string) => (
+                  <span key={c} className="text-[8px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-bold uppercase">{c}</span>
+                ))}
               </div>
             )}
-            {chatHistory.map((msg, i) => (
-              <div key={i} className={cn("flex flex-col gap-2", msg.role === 'user' ? "items-end" : "items-start")}>
-                <div className={cn(
-                  "max-w-[80%] p-3 rounded-lg text-sm",
-                  msg.role === 'user' ? "bg-primary text-on-primary" : "bg-surface-container-highest text-slate-200"
-                )}>
-                  {msg.text}
-                </div>
-                {msg.hint && (
-                  <div className="bg-yellow-500/10 border border-yellow-500/20 p-3 rounded-lg text-xs text-yellow-200 italic">
-                    <span className="font-bold uppercase tracking-widest block mb-1">Hint:</span>
-                    {msg.hint}
-                  </div>
+          </div>
+          
+          <div className="flex border-b border-outline-variant/5">
+            {(['hints', 'approach', 'complexity', 'edge-cases'] as const).map(tab => (
+              <button
+                key={tab}
+                onClick={() => setAssistantTab(tab)}
+                className={cn(
+                  "flex-1 py-3 text-[10px] font-bold uppercase tracking-widest transition-all border-b-2",
+                  assistantTab === tab ? "text-primary border-primary bg-primary/5" : "text-slate-500 border-transparent hover:text-slate-300"
                 )}
-              </div>
+              >
+                {tab.replace('-', ' ')}
+              </button>
             ))}
           </div>
 
-          <div className="p-4 border-t border-outline-variant/5 flex gap-2">
-            <input 
-              type="text" 
-              value={chatInput}
-              onChange={(e) => setChatInput(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && askAssistant()}
-              placeholder="Ask for a hint..."
-              className="flex-1 bg-surface-container-highest border border-outline-variant/10 rounded-lg px-4 py-2 text-xs text-slate-200 focus:outline-none focus:border-primary transition-colors"
-            />
-            <button 
-              onClick={askAssistant}
-              className="p-2 bg-primary text-on-primary rounded-lg hover:bg-primary-hover transition-colors"
-            >
-              <Send className="w-4 h-4" />
-            </button>
+          <div className="flex-1 p-6 overflow-y-auto custom-scrollbar">
+            {!assistantData ? (
+              <div className="text-center py-8">
+                <Lightbulb className="w-8 h-8 text-slate-600 mx-auto mb-3" />
+                <p className="text-xs text-slate-500 font-mono uppercase">Analyzing problem context...</p>
+              </div>
+            ) : (
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={assistantTab}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="space-y-4"
+                >
+                  {assistantTab === 'hints' && (
+                    <div className="space-y-4">
+                      {assistantData.hints.map((hint: string, i: number) => (
+                        <div key={i} className="p-4 bg-surface-container-highest/50 rounded-lg border border-outline-variant/5">
+                          <span className="text-[10px] font-bold text-primary uppercase tracking-widest block mb-1">Hint {i + 1}</span>
+                          <p className="text-xs text-slate-300 leading-relaxed">{hint}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {assistantTab === 'approach' && (
+                    <div className="space-y-4">
+                      <div className="p-4 bg-surface-container-highest/50 rounded-lg border border-outline-variant/5">
+                        <p className="text-xs text-slate-300 leading-relaxed">{assistantData.approach}</p>
+                      </div>
+                      <div className="p-4 bg-black/20 rounded-lg border border-outline-variant/5">
+                        <span className="text-[10px] font-bold text-secondary uppercase tracking-widest block mb-2">Example Walkthrough</span>
+                        <pre className="text-[10px] font-mono text-slate-400 whitespace-pre-wrap">{assistantData.walkthrough}</pre>
+                      </div>
+                    </div>
+                  )}
+
+                  {assistantTab === 'complexity' && (
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="p-4 bg-surface-container-highest/50 rounded-lg border border-outline-variant/5 text-center">
+                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">Time Complexity</span>
+                        <span className="text-lg font-mono text-primary font-bold">{assistantData.complexity.time}</span>
+                      </div>
+                      <div className="p-4 bg-surface-container-highest/50 rounded-lg border border-outline-variant/5 text-center">
+                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">Space Complexity</span>
+                        <span className="text-lg font-mono text-secondary font-bold">{assistantData.complexity.space}</span>
+                      </div>
+                      <div className="col-span-2 p-4 bg-surface-container-highest/50 rounded-lg border border-outline-variant/5">
+                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-2">Key Concepts</span>
+                        <div className="flex flex-wrap gap-2">
+                          {assistantData.concepts.map((c: string) => (
+                            <span key={c} className="px-2 py-1 bg-black/20 rounded text-[10px] font-mono text-slate-400 uppercase">{c}</span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {assistantTab === 'edge-cases' && (
+                    <div className="space-y-3">
+                      {assistantData.edge_cases.map((ec: string, i: number) => (
+                        <div key={i} className="flex items-start gap-3 p-3 bg-surface-container-highest/30 rounded-lg">
+                          <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary shrink-0">{i + 1}</div>
+                          <p className="text-xs text-slate-300">{ec}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </motion.div>
+              </AnimatePresence>
+            )}
           </div>
         </div>
       </div>
@@ -252,6 +314,16 @@ export const ProblemDetailView: React.FC<ProblemDetailViewProps> = ({ problemId,
             className="flex-1 bg-transparent p-6 font-mono text-sm text-slate-300 focus:outline-none resize-none custom-scrollbar"
             spellCheck="false"
           />
+
+          <div className="px-6 py-3 bg-[#252526] border-t border-outline-variant/5">
+            <h3 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Custom Input</h3>
+            <textarea 
+              value={customInput}
+              onChange={(e) => setCustomInput(e.target.value)}
+              placeholder="Enter test input here..."
+              className="w-full h-16 bg-black/30 border border-outline-variant/10 rounded p-2 font-mono text-xs text-slate-300 focus:outline-none focus:border-primary/50 resize-none"
+            />
+          </div>
 
           <div className="p-4 bg-[#252526] border-t border-outline-variant/5 flex justify-between items-center">
             <div className="flex gap-4">

@@ -101,14 +101,21 @@ export const OnboardingGuide: React.FC<OnboardingGuideProps> = ({ onComplete, on
   return (
     <AnimatePresence>
       {isVisible && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-background/60 backdrop-blur-sm">
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="w-full max-w-md bg-surface-container-low border border-outline-variant/20 rounded-3xl shadow-2xl overflow-hidden relative"
-          >
-            {/* Progress Bar */}
+        <div className="fixed inset-0 z-[100] pointer-events-none">
+          {/* Overlay without blur */}
+          <div className="absolute inset-0 bg-background/20" />
+          
+          <div className="absolute inset-0 flex items-center justify-center p-6 pointer-events-auto">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="w-full max-w-md bg-surface-container-low border border-primary/30 rounded-3xl shadow-[0_0_50px_rgba(var(--primary),0.2)] overflow-hidden relative"
+            >
+              {/* Arrow Pointer (Simulated) */}
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 bg-surface-container-low border-t border-l border-primary/30 rotate-45" />
+
+              {/* Progress Bar */}
             <div className="absolute top-0 left-0 w-full h-1 bg-surface-container-highest">
               <motion.div 
                 className="h-full bg-primary"
@@ -178,6 +185,7 @@ export const OnboardingGuide: React.FC<OnboardingGuideProps> = ({ onComplete, on
             </div>
           </motion.div>
         </div>
+      </div>
       )}
     </AnimatePresence>
   );

@@ -12,8 +12,24 @@ export const PlatformCard: React.FC<PlatformCardProps> = ({ stats }) => {
   const isCodeforces = stats.name === 'Codeforces';
   const isCodeChef = stats.name === 'CodeChef';
 
+  const handlePlatformClick = () => {
+    const urls: Record<string, string> = {
+      'LeetCode': 'https://leetcode.com',
+      'Codeforces': 'https://codeforces.com',
+      'CodeChef': 'https://codechef.com',
+      'HackerRank': 'https://hackerrank.com'
+    };
+    const url = urls[stats.name];
+    if (url) {
+      window.open(url, "_blank");
+    }
+  };
+
   return (
-    <div className="bg-surface-container p-6 rounded-xl relative overflow-hidden group hover:bg-surface-container-high transition-all duration-300">
+    <div 
+      onClick={handlePlatformClick}
+      className="bg-surface-container p-6 rounded-xl relative overflow-hidden group hover:bg-surface-container-high transition-all duration-300 cursor-pointer border border-outline-variant/5 hover:border-primary/20"
+    >
       <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
         {isLeetCode && <Code2 className="w-16 h-16" />}
         {isCodeforces && <Trophy className="w-16 h-16" />}

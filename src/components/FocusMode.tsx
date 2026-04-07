@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Play, 
@@ -13,64 +13,18 @@ import {
   VolumeX
 } from 'lucide-react';
 import { cn } from '../lib/utils';
-
-type TimerMode = 'focus' | 'break';
+import { useFocus } from '../context/FocusContext';
 
 export const FocusMode: React.FC = () => {
-  const [mode, setMode] = useState<TimerMode>('focus');
-  const [timeLeft, setTimeLeft] = useState(25 * 60);
-  const [isActive, setIsActive] = useState(false);
-  const [sessionsCompleted, setSessionsCompleted] = useState(0);
+  const { mode, timeLeft, isActive, sessionsCompleted, toggleTimer, resetTimer, setMode } = useFocus();
   const [isMuted, setIsMuted] = useState(false);
   
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-
   const totalTime = mode === 'focus' ? 25 * 60 : 5 * 60;
   const progress = ((totalTime - timeLeft) / totalTime) * 100;
-
-  useEffect(() => {
-    if (isActive && timeLeft > 0) {
-      timerRef.current = setInterval(() => {
-        setTimeLeft((prev) => prev - 1);
-      }, 1000);
-    } else if (timeLeft === 0) {
-      handleTimerComplete();
-    } else {
-      if (timerRef.current) clearInterval(timerRef.current);
-    }
-
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, [isActive, timeLeft]);
-
-  const handleTimerComplete = () => {
-    if (timerRef.current) clearInterval(timerRef.current);
-    setIsActive(false);
-    
-    if (mode === 'focus') {
-      setMode('break');
-      setTimeLeft(5 * 60);
-      setSessionsCompleted(prev => prev + 1);
-      if (!isMuted) playNotification();
-    } else {
-      setMode('focus');
-      setTimeLeft(25 * 60);
-      if (!isMuted) playNotification();
-    }
-  };
 
   const playNotification = () => {
     // Simulated sound notification
     console.log("Timer complete!");
-  };
-
-  const toggleTimer = () => setIsActive(!isActive);
-
-  const resetTimer = () => {
-    setIsActive(false);
-    setMode('focus');
-    setTimeLeft(25 * 60);
   };
 
   const formatTime = (seconds: number) => {

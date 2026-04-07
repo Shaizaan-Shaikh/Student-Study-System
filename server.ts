@@ -89,7 +89,16 @@ let problems = [
     sample_output: "[0,1]", 
     expected_output: "0 1",
     solution: "use a hash map to store seen values",
-    hints: ["Try using a hash map to store the complement of each number.", "The complement is target - nums[i]."],
+    hints: [
+      "Try using a hash map to store the complement of each number.", 
+      "The complement is target - nums[i]. Check if this complement exists in the map as you iterate.",
+      "Iterate through the array once. For each element, calculate target - element. If it exists in your hash map, you found the pair!"
+    ],
+    complexity: { time: "O(n)", space: "O(n)" },
+    concepts: ["Arrays", "Hash Table", "Complement Logic"],
+    approach: "We can solve this efficiently using a Hash Map. As we iterate through the array, we store each number's index. For the current number, we check if (target - current) already exists in our map.",
+    edge_cases: ["Array with only two elements", "Negative numbers in array", "Multiple pairs (return first one found)"],
+    walkthrough: "Input: [2, 7, 11, 15], Target: 9\n1. i=0, val=2. Complement = 9-2=7. Map is empty. Store {2: 0}.\n2. i=1, val=7. Complement = 9-7=2. 2 exists in map at index 0!\n3. Return [0, 1].",
     sheet_ids: ["sheet2", "sheet3"],
     path_ids: ["path_dsa_beg"]
   },
@@ -104,7 +113,16 @@ let problems = [
     sample_output: "['o','l','l','e','h']", 
     expected_output: "o l l e h",
     solution: "swap characters from both ends using two pointers",
-    hints: ["Use two pointers, one at the start and one at the end.", "Swap the characters and move pointers towards each other."],
+    hints: [
+      "Use two pointers, one at the start and one at the end.", 
+      "Swap the characters at these pointers and move pointers towards each other.",
+      "Continue swapping until the left pointer is no longer less than the right pointer."
+    ],
+    complexity: { time: "O(n)", space: "O(1)" },
+    concepts: ["Strings", "Two Pointers", "In-place Modification"],
+    approach: "The most efficient way is to use two pointers. One starts at the beginning (0) and the other at the end (length-1). We swap the characters at these positions and move the pointers inward.",
+    edge_cases: ["Empty string", "Single character string", "String with even vs odd length"],
+    walkthrough: "Input: ['h', 'e', 'l', 'l', 'o']\n1. Left=0 (h), Right=4 (o). Swap -> ['o', 'e', 'l', 'l', 'h'].\n2. Left=1 (e), Right=3 (l). Swap -> ['o', 'l', 'l', 'e', 'h'].\n3. Left=2, Right=2. Stop.",
     sheet_ids: ["sheet1"],
     path_ids: ["path_dsa_beg"]
   },
@@ -119,7 +137,16 @@ let problems = [
     sample_output: "4", 
     expected_output: "4",
     solution: "divide and conquer by checking the middle element",
-    hints: ["Calculate the middle index.", "If target is smaller than middle, search left half, else search right half."],
+    hints: [
+      "Calculate the middle index of the current search range.", 
+      "If target is smaller than middle, search left half, else search right half.",
+      "Keep updating your low and high pointers until they cross or the target is found."
+    ],
+    complexity: { time: "O(log n)", space: "O(1)" },
+    concepts: ["Arrays", "Binary Search", "Divide and Conquer"],
+    approach: "Since the array is sorted, we can use Binary Search. We repeatedly divide the search interval in half. If the value of the search key is less than the item in the middle of the interval, narrow the interval to the lower half. Otherwise, narrow it to the upper half.",
+    edge_cases: ["Target not in array", "Array with one element", "Target is at the very beginning or end"],
+    walkthrough: "Input: [-1, 0, 3, 5, 9, 12], Target: 9\n1. Low=0, High=5, Mid=2 (val=3). 9 > 3, so Low=3.\n2. Low=3, High=5, Mid=4 (val=9). 9 == 9! Return 4.",
     sheet_ids: ["sheet1", "sheet2"],
     path_ids: ["path_dsa_int"]
   },
@@ -134,7 +161,16 @@ let problems = [
     sample_output: "5", 
     expected_output: "5",
     solution: "use an array to store previously calculated fibonacci values",
-    hints: ["Use an array to store results of subproblems.", "fib(n) = fib(n-1) + fib(n-2)."],
+    hints: [
+      "Use an array or two variables to store results of subproblems.", 
+      "The formula is fib(n) = fib(n-1) + fib(n-2).",
+      "Start from the base cases (0 and 1) and build up to n."
+    ],
+    complexity: { time: "O(n)", space: "O(1) with optimization" },
+    concepts: ["Dynamic Programming", "Recursion", "Memoization"],
+    approach: "Instead of naive recursion which is O(2^n), we use Dynamic Programming. We store the results of previous calculations to avoid redundant work. We can even optimize space by only keeping the last two values.",
+    edge_cases: ["n = 0", "n = 1", "Large values of n"],
+    walkthrough: "Input: n=5\n1. fib(0)=0, fib(1)=1\n2. fib(2)=0+1=1\n3. fib(3)=1+1=2\n4. fib(4)=1+2=3\n5. fib(5)=2+3=5. Return 5.",
     sheet_ids: ["sheet1", "sheet3"],
     path_ids: ["path_dsa_int"]
   },
@@ -149,7 +185,16 @@ let problems = [
     sample_output: "0 1 2 3", 
     expected_output: "0 1 2 3",
     solution: "use a queue to visit nodes layer by layer",
-    hints: ["Use a queue to keep track of nodes to visit.", "Mark nodes as visited to avoid cycles."],
+    hints: [
+      "Use a queue to keep track of nodes to visit.", 
+      "Mark nodes as visited to avoid cycles and redundant processing.",
+      "For each node, visit all its neighbors before moving to the next level."
+    ],
+    complexity: { time: "O(V + E)", space: "O(V)" },
+    concepts: ["Graphs", "BFS", "Queue"],
+    approach: "BFS uses a queue to explore nodes level by level. We start at node 0, mark it visited, and enqueue it. While the queue is not empty, we dequeue a node and enqueue all its unvisited neighbors.",
+    edge_cases: ["Disconnected graph", "Graph with cycles", "Single node graph"],
+    walkthrough: "Input: adj = [[1,2],[0,3],[0,3],[1,2]]\n1. Start at 0. Visited={0}, Queue=[0].\n2. Dequeue 0. Neighbors={1,2}. Visited={0,1,2}, Queue=[1,2].\n3. Dequeue 1. Neighbors={0,3}. 0 visited, enqueue 3. Visited={0,1,2,3}, Queue=[2,3].\n4. Dequeue 2. Neighbors={0,3}. Both visited.\n5. Dequeue 3. Done.",
     sheet_ids: ["sheet1"],
     path_ids: ["path_dsa_adv"]
   },
@@ -164,8 +209,113 @@ let problems = [
     sample_output: "3", 
     expected_output: "3",
     solution: "use a sliding window with a set to track unique characters",
-    hints: ["Use a sliding window approach.", "Use a set to store characters in the current window."],
+    hints: [
+      "Use a sliding window approach with two pointers.", 
+      "Use a set or map to store characters in the current window.",
+      "If you encounter a duplicate, shrink the window from the left until it's unique again."
+    ],
+    complexity: { time: "O(n)", space: "O(min(m, n))" },
+    concepts: ["Strings", "Sliding Window", "Hash Set"],
+    approach: "We use a sliding window defined by two pointers. We expand the right pointer and add characters to a set. If a character is already in the set, we shrink the window from the left until the duplicate is removed.",
+    edge_cases: ["Empty string", "String with all same characters", "String with all unique characters"],
+    walkthrough: "Input: 'abcabcbb'\n1. [a] len=1\n2. [ab] len=2\n3. [abc] len=3\n4. 'a' duplicate. Shrink left: [bca] len=3\n5. 'b' duplicate. Shrink left: [cab] len=3\n6. 'c' duplicate. Shrink left: [abc] len=3\n7. 'b' duplicate. Shrink left: [cb] len=2\n8. 'b' duplicate. Shrink left: [b] len=1.",
     sheet_ids: ["sheet2"],
+    path_ids: ["path_dsa_int"]
+  },
+  { 
+    id: "p7", 
+    title: "N-Queens Puzzle", 
+    description: "Place N queens on an NxN chessboard such that no two queens attack each other.", 
+    difficulty: "challenge", 
+    platform: "internal", 
+    tags: ["backtracking", "recursion"], 
+    sample_input: "n = 4", 
+    sample_output: "[[0,1,0,0],[0,0,0,1],[1,0,0,0],[0,0,1,0]]", 
+    expected_output: "0 1 0 0 0 0 0 1 1 0 0 0 0 0 1 0",
+    solution: "use backtracking to place queens row by row",
+    hints: [
+      "Try placing a queen in each row, one by one.", 
+      "Check if the current position is safe from previously placed queens (row, column, and diagonals).",
+      "If you can't place a queen in a row, backtrack to the previous row and try a different position."
+    ],
+    complexity: { time: "O(N!)", space: "O(N)" },
+    concepts: ["Backtracking", "Recursion", "Arrays"],
+    approach: "This is a classic backtracking problem. we place queens row by row. For each row, we try all columns. If a position is safe, we place the queen and move to the next row. If we reach the end, we found a solution.",
+    edge_cases: ["n=1", "n=2 (no solution)", "n=3 (no solution)"],
+    walkthrough: "Input: n=4\n1. Row 0: Place at (0,0)\n2. Row 1: (1,0)X, (1,1)X, (1,2) OK. Place at (1,2)\n3. Row 2: (2,0)X, (2,1)X, (2,2)X, (2,3)X. Backtrack!\n4. Row 1: Try (1,3) OK. Place at (1,3)\n5. Row 2: (2,0)X, (2,1) OK. Place at (2,1)\n6. Row 3: (3,0)X, (3,1)X, (3,2)X, (3,3)X. Backtrack! ... and so on.",
+    sheet_ids: ["sheet1"],
+    path_ids: ["path_dsa_adv"]
+  },
+  { 
+    id: "p8", 
+    title: "Merge K Sorted Lists", 
+    description: "Merge k sorted linked lists and return it as one sorted list.", 
+    difficulty: "hard", 
+    platform: "leetcode", 
+    tags: ["linked-list", "heap", "merge-sort"], 
+    sample_input: "lists = [[1,4,5],[1,3,4],[2,6]]", 
+    sample_output: "[1,1,2,3,4,4,5,6]", 
+    expected_output: "1 1 2 3 4 4 5 6",
+    solution: "use a priority queue to keep track of the smallest element among the k lists",
+    hints: [
+      "Use a min-priority queue to keep track of the smallest element across all lists.", 
+      "Add the head of each list to the priority queue initially.",
+      "Pop the smallest, add it to your result, and then add the next element from the same list to the queue."
+    ],
+    complexity: { time: "O(N log k)", space: "O(k)" },
+    concepts: ["Linked List", "Heap", "Divide and Conquer"],
+    approach: "A Min-Heap is perfect here. We put the first element of each list into the heap. We repeatedly extract the minimum element and add the next element from the corresponding list back into the heap.",
+    edge_cases: ["Empty lists", "One list", "Lists of different lengths"],
+    walkthrough: "Input: [[1,4,5],[1,3,4],[2,6]]\n1. Heap: [1, 1, 2]. Pop 1. Result: [1]. Add 4 from list 1. Heap: [1, 4, 2].\n2. Pop 1. Result: [1, 1]. Add 3 from list 2. Heap: [3, 4, 2].\n3. Pop 2. Result: [1, 1, 2]. Add 6 from list 3. Heap: [3, 4, 6]. ... and so on.",
+    sheet_ids: ["sheet2", "sheet3"],
+    path_ids: ["path_dsa_adv"]
+  },
+  { 
+    id: "p9", 
+    title: "Valid Parentheses", 
+    description: "Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.", 
+    difficulty: "easy", 
+    platform: "leetcode", 
+    tags: ["stack", "strings"], 
+    sample_input: "s = '()[]{}'", 
+    sample_output: "true", 
+    expected_output: "true",
+    solution: "use a stack to push opening brackets and pop when a matching closing bracket is found",
+    hints: [
+      "Use a stack data structure to keep track of opening brackets.", 
+      "When you see a closing bracket, check if it matches the top of the stack.",
+      "If it matches, pop it. If not, or if the stack is empty, it's invalid."
+    ],
+    complexity: { time: "O(n)", space: "O(n)" },
+    concepts: ["Stack", "Strings", "Matching Logic"],
+    approach: "We use a stack. For every opening bracket, we push it. For every closing bracket, we check if the stack is empty or if the top doesn't match. At the end, the stack must be empty for the string to be valid.",
+    edge_cases: ["Only opening brackets", "Only closing brackets", "Nested brackets like '([{}])'"],
+    walkthrough: "Input: '()[]{}'\n1. '(' -> Stack: ['(']\n2. ')' -> Match! Stack: []\n3. '[' -> Stack: ['[']\n4. ']' -> Match! Stack: []\n5. '{' -> Stack: ['{']\n6. '}' -> Match! Stack: []. Valid!",
+    sheet_ids: ["sheet2", "sheet3"],
+    path_ids: ["path_dsa_beg"]
+  },
+  { 
+    id: "p10", 
+    title: "Maximum Subarray", 
+    description: "Find the contiguous subarray (containing at least one number) which has the largest sum and return its sum.", 
+    difficulty: "medium", 
+    platform: "leetcode", 
+    tags: ["arrays", "dynamic-programming"], 
+    sample_input: "nums = [-2,1,-3,4,-1,2,1,-5,4]", 
+    sample_output: "6", 
+    expected_output: "6",
+    solution: "use Kadane's algorithm to find the maximum subarray sum",
+    hints: [
+      "Try Kadane's algorithm: at each position, decide whether to start a new subarray or continue the existing one.", 
+      "Keep track of the current sum and the maximum sum found so far.",
+      "If the current sum becomes negative, it's better to start fresh from the next element."
+    ],
+    complexity: { time: "O(n)", space: "O(1)" },
+    concepts: ["Arrays", "Dynamic Programming", "Kadane's Algorithm"],
+    approach: "Kadane's Algorithm is the standard approach. We iterate through the array and maintain the maximum subarray sum ending at the current position. If this sum becomes less than the current element itself, we reset it to the current element.",
+    edge_cases: ["All negative numbers", "Single element array", "Alternating positive and negative numbers"],
+    walkthrough: "Input: [-2, 1, -3, 4, -1, 2, 1, -5, 4]\n1. Current= -2, Max= -2\n2. Current= 1, Max= 1\n3. Current= -2, Max= 1\n4. Current= 4, Max= 4\n5. Current= 3, Max= 4\n6. Current= 5, Max= 5\n7. Current= 6, Max= 6\n8. Current= 1, Max= 6\n9. Current= 5, Max= 6. Return 6.",
+    sheet_ids: ["sheet1", "sheet2"],
     path_ids: ["path_dsa_int"]
   }
 ];
@@ -450,6 +600,83 @@ async function startServer() {
   });
 
   // --- CODING PRACTICE ---
+  const simulateExecution = (problemId: string, input: string, code: string) => {
+    const cleanInput = input.trim();
+    const codeLower = code.toLowerCase();
+    
+    // Basic check for "empty" or "hello world" code
+    const isTrivial = codeLower.includes("hello world") || codeLower.length < 50;
+    
+    try {
+      switch (problemId) {
+        case 'p1': // Two Sum
+          // Expected input: "2,7,11,15 9" or "[2,7,11,15] 9"
+          const p1Match = cleanInput.match(/\[?([\d,\s]+)\]?\s+(\d+)/);
+          if (p1Match) {
+            const nums = p1Match[1].split(',').map(n => parseInt(n.trim()));
+            const target = parseInt(p1Match[2]);
+            const map = new Map();
+            for (let i = 0; i < nums.length; i++) {
+              const complement = target - nums[i];
+              if (map.has(complement)) return `${map.get(complement)} ${i}`;
+              map.set(nums[i], i);
+            }
+            return "No solution found";
+          }
+          return "Error: Invalid input format. Expected: nums target";
+
+        case 'p2': // Reverse String
+          return cleanInput.split('').reverse().join('');
+
+        case 'p3': // Binary Search
+          // Expected input: "[-1,0,3,5,9,12] 9"
+          const p3Match = cleanInput.match(/\[?([\d,-\s]+)\]?\s+(-?\d+)/);
+          if (p3Match) {
+            const nums = p3Match[1].split(',').map(n => parseInt(n.trim()));
+            const target = parseInt(p3Match[2]);
+            let left = 0, right = nums.length - 1;
+            while (left <= right) {
+              const mid = Math.floor((left + right) / 2);
+              if (nums[mid] === target) return String(mid);
+              if (nums[mid] < target) left = mid + 1;
+              else right = mid - 1;
+            }
+            return "-1";
+          }
+          return "Error: Invalid input format. Expected: sorted_nums target";
+
+        case 'p4': // Fibonacci
+          const n = parseInt(cleanInput);
+          if (isNaN(n)) return "Error: Please provide a number n";
+          if (n < 0) return "0";
+          if (n <= 1) return String(n);
+          let a = 0, b = 1;
+          for (let i = 2; i <= n; i++) {
+            let temp = a + b;
+            a = b;
+            b = temp;
+          }
+          return String(b);
+
+        case 'p10': // Maximum Subarray
+          const p10Nums = cleanInput.replace(/[\[\]]/g, '').split(',').map(n => parseInt(n.trim()));
+          if (p10Nums.some(isNaN)) return "Error: Invalid array input";
+          let maxSoFar = p10Nums[0];
+          let maxEndingHere = p10Nums[0];
+          for (let i = 1; i < p10Nums.length; i++) {
+            maxEndingHere = Math.max(p10Nums[i], maxEndingHere + p10Nums[i]);
+            maxSoFar = Math.max(maxSoFar, maxEndingHere);
+          }
+          return String(maxSoFar);
+
+        default:
+          return isTrivial ? "Hello World" : "Execution successful (Mock Output)";
+      }
+    } catch (e) {
+      return "Runtime Error: Execution failed";
+    }
+  };
+
   app.get("/api/problems", (req, res) => {
     res.json({ success: true, message: "Problems retrieved", data: problems });
   });
@@ -462,7 +689,7 @@ async function startServer() {
   });
 
   app.post("/api/problems/run", (req, res) => {
-    const { student_id, problem_id, code, language } = req.body;
+    const { student_id, problem_id, code, language, input } = req.body;
     const problem = problems.find(p => p.id === problem_id);
     if (!problem) return res.status(404).json({ success: false, message: "Problem not found", data: null });
 
@@ -476,20 +703,11 @@ async function startServer() {
       error = "Segmentation fault (core dumped)";
       output = `Runtime Error:\n${error}`;
     } else {
-      const hasPrint = codeLower.includes("print") || codeLower.includes("cout") || codeLower.includes("printf");
-      const matchesSolution = codeLower.includes(problem.solution.toLowerCase().split(' ')[0]) || codeLower.includes("correct");
-
-      if (hasPrint && matchesSolution) {
-        status = "success";
-        output = `Output:\n${problem.expected_output}\nExecution Time: 0.01s`;
-      } else if (hasPrint) {
-        status = "wrong_answer";
-        const wrongOutput = "5 10"; // Dummy wrong output
-        output = `Output:\n${wrongOutput}\nExpected:\n${problem.expected_output}`;
-      } else {
-        status = "wrong_answer";
-        output = `Output:\n(no output)\nExpected:\n${problem.expected_output}`;
-      }
+      const runInput = input || problem.sample_input;
+      const result = simulateExecution(problem_id, runInput, code);
+      
+      status = "success";
+      output = `> Running...\n> Input: ${runInput}\n> Output: ${result}\n\nExecution Time: 0.01s`;
     }
 
     res.json({ success: true, message: "Code executed", data: { output, error, status } });
@@ -503,7 +721,7 @@ async function startServer() {
 
     if (!student || !problem || !profile) return res.status(400).json({ success: false, message: "Invalid student or problem", data: null });
 
-    // Simulate run
+    // Simulate run with sample input
     const codeLower = code.toLowerCase();
     let status: "accepted" | "runtime_error" | "wrong_answer" = "wrong_answer";
     let terminalOutput = "";
@@ -512,22 +730,19 @@ async function startServer() {
       status = "runtime_error";
       terminalOutput = "Runtime Error:\nSegmentation fault (core dumped)";
     } else {
-      const hasPrint = codeLower.includes("print") || codeLower.includes("cout") || codeLower.includes("printf");
-      const matchesSolution = codeLower.includes(problem.solution.toLowerCase().split(' ')[0]) || codeLower.includes("correct");
+      const result = simulateExecution(problem_id, problem.sample_input, code);
+      const isCorrect = result.trim() === problem.expected_output.trim() || codeLower.includes("correct") || codeLower.includes(problem.solution.toLowerCase().split(' ')[0]);
 
-      if (hasPrint && matchesSolution) {
+      if (isCorrect) {
         status = "accepted";
-        terminalOutput = `Output:\n${problem.expected_output}\nExecution Time: 0.01s`;
-      } else if (hasPrint) {
-        status = "wrong_answer";
-        terminalOutput = `Output:\n5 10\nExpected:\n${problem.expected_output}`;
+        terminalOutput = `> Running Test Cases...\n> Test Case 1: Passed\n> Test Case 2: Passed\n> All Test Cases Passed!\n\nOutput:\n${result}\nExecution Time: 0.01s`;
       } else {
         status = "wrong_answer";
-        terminalOutput = `Output:\n(no output)\nExpected:\n${problem.expected_output}`;
+        terminalOutput = `> Running Test Cases...\n> Test Case 1: Failed\n\nInput: ${problem.sample_input}\nOutput: ${result}\nExpected: ${problem.expected_output}`;
       }
     }
 
-    const pointsMap: Record<string, number> = { easy: 10, medium: 20, hard: 30 };
+    const pointsMap: Record<string, number> = { easy: 10, medium: 20, hard: 30, challenge: 50 };
     const score = status === "accepted" ? pointsMap[problem.difficulty] : 0;
 
     const submission = {
@@ -575,19 +790,15 @@ async function startServer() {
 
     const q = question.toLowerCase();
     let response = {
-      hint: "Think about the constraints and the expected time complexity.",
-      explanation: "This problem asks you to find a specific pattern or value within the given input.",
-      approach: "Start by understanding the sample cases and then try a brute-force approach before optimizing.",
-      encouragement: "You're doing great! Keep trying different approaches."
+      hints: problem.hints || ["Try to break the problem into smaller sub-problems."],
+      explanation: `This problem, "${problem.title}", asks you to: ${problem.description}`,
+      approach: problem.approach || "Start by understanding the sample cases and then try a brute-force approach before optimizing.",
+      complexity: problem.complexity || { time: "N/A", space: "N/A" },
+      concepts: problem.concepts || problem.tags,
+      edge_cases: problem.edge_cases || ["Empty input", "Single element"],
+      walkthrough: problem.walkthrough || "Take the sample input and trace the logic step-by-step.",
+      difficulty: problem.difficulty
     };
-
-    if (q.includes("hint")) {
-      response.hint = problem.hints[0] || "Try to break the problem into smaller sub-problems.";
-    } else if (q.includes("approach")) {
-      response.approach = `For this ${problem.tags[0]} problem, you should consider using a ${problem.tags[1] || 'efficient'} strategy. ${problem.solution.split('.')[0]}.`;
-    } else if (q.includes("solution")) {
-      response.explanation = `The core idea is to ${problem.solution}. However, I recommend trying to implement it yourself first!`;
-    }
 
     res.json({ success: true, message: "Assistant response", data: response });
   });

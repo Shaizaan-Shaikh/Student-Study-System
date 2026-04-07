@@ -1,11 +1,11 @@
-import React from 'react';
-import { ExternalLink, CheckCircle2, Circle } from 'lucide-react';
+import React, { useState } from 'react';
+import { ExternalLink, CheckCircle2, Circle, Filter } from 'lucide-react';
 import { cn } from '@/src/lib/utils';
 
 interface Problem {
   id: string;
   title: string;
-  difficulty: 'Easy' | 'Medium' | 'Hard';
+  difficulty: 'Easy' | 'Medium' | 'Hard' | 'Challenge';
   platform: string;
   tags: string[];
   solved: boolean;
@@ -17,11 +17,39 @@ interface ProblemListProps {
 }
 
 export const ProblemList: React.FC<ProblemListProps> = ({ problems, onSelect }) => {
+  const [filter, setFilter] = useState<string>('All');
+
+  const filteredProblems = filter === 'All' 
+    ? problems 
+    : problems.filter(p => p.difficulty.toLowerCase() === filter.toLowerCase());
+
+  const difficulties = ['All', 'Easy', 'Medium', 'Hard', 'Challenge'];
+
   return (
     <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="flex flex-col gap-1 mb-6">
-        <h1 className="text-3xl font-headline font-bold text-slate-100">Problems</h1>
-        <p className="text-slate-500 text-sm">Browse and solve competitive programming problems</p>
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-3xl font-headline font-bold text-slate-100">Problems</h1>
+          <p className="text-slate-500 text-sm">Browse and solve competitive programming problems</p>
+        </div>
+        
+        <div className="flex items-center gap-2 bg-surface-container-low p-1 rounded-lg border border-outline-variant/10">
+          <Filter className="w-3 h-3 text-slate-500 ml-2" />
+          {difficulties.map((d) => (
+            <button
+              key={d}
+              onClick={() => setFilter(d)}
+              className={cn(
+                "px-4 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-widest transition-all",
+                filter === d 
+                  ? "bg-primary text-on-primary shadow-lg shadow-primary/20" 
+                  : "text-slate-500 hover:text-slate-200"
+              )}
+            >
+              {d}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="bg-surface-container-low rounded-xl border border-outline-variant/10 overflow-hidden">
@@ -34,11 +62,11 @@ export const ProblemList: React.FC<ProblemListProps> = ({ problems, onSelect }) 
                 <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-500">Difficulty</th>
                 <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-500">Platform</th>
                 <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-500">Tags</th>
-                <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-500">Action</th>
+                <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-500 text-right">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-outline-variant/10">
-              {problems.map((p) => (
+              {filteredProblems.map((p) => (
                 <tr 
                   key={p.id} 
                   className="hover:bg-surface-container transition-colors group cursor-pointer"
@@ -59,7 +87,8 @@ export const ProblemList: React.FC<ProblemListProps> = ({ problems, onSelect }) 
                       "text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-widest",
                       p.difficulty.toLowerCase() === 'easy' ? "text-secondary bg-secondary/10" :
                       p.difficulty.toLowerCase() === 'medium' ? "text-tertiary bg-tertiary/10" :
-                      "text-error bg-error/10"
+                      p.difficulty.toLowerCase() === 'hard' ? "text-error bg-error/10" :
+                      "text-primary bg-primary/10"
                     )}>
                       {p.difficulty}
                     </span>
@@ -76,13 +105,20 @@ export const ProblemList: React.FC<ProblemListProps> = ({ problems, onSelect }) 
                       ))}
                     </div>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 text-right">
                     <button className="p-2 text-slate-500 group-hover:text-primary transition-colors">
                       <ExternalLink className="w-4 h-4" />
                     </button>
                   </td>
                 </tr>
               ))}
+              {filteredProblems.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="px-6 py-12 text-center text-slate-500 font-headline">
+                    No problems found for this difficulty level.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

@@ -108,6 +108,42 @@ export const FriendsView: React.FC<FriendsViewProps> = ({ onCompare }) => {
         <div className="space-y-6">
           <div className="bg-surface-container-low rounded-xl border border-outline-variant/10 p-6">
             <h3 className="text-sm font-bold text-slate-200 uppercase tracking-widest mb-4 flex items-center gap-2">
+              <UserPlus className="w-4 h-4 text-primary" />
+              Add Friend
+            </h3>
+            <div className="space-y-3">
+              <div className="relative">
+                <input 
+                  type="text" 
+                  placeholder="Enter username..." 
+                  className="w-full bg-surface-container-highest/50 border border-outline-variant/20 rounded-lg px-4 py-2 text-xs text-slate-200 focus:outline-none focus:border-primary transition-colors"
+                  id="friend-username"
+                />
+              </div>
+              <button 
+                onClick={() => {
+                  const input = document.getElementById('friend-username') as HTMLInputElement;
+                  const username = input?.value;
+                  if (username) {
+                    // Simulated logic
+                    const dummyUsers = ['CodeNinja', 'AlgoMaster', 'BinaryBeast', 'NullPointer'];
+                    if (dummyUsers.includes(username)) {
+                      alert(`Friend request sent to ${username}!`);
+                      input.value = '';
+                    } else {
+                      alert('User not found. Try "CodeNinja" or "AlgoMaster"');
+                    }
+                  }
+                }}
+                className="w-full py-2 bg-primary text-on-primary rounded-lg text-[10px] font-bold uppercase tracking-widest hover:scale-105 transition-transform"
+              >
+                Send Request
+              </button>
+            </div>
+          </div>
+
+          <div className="bg-surface-container-low rounded-xl border border-outline-variant/10 p-6">
+            <h3 className="text-sm font-bold text-slate-200 uppercase tracking-widest mb-4 flex items-center gap-2">
               <UserPlus className="w-4 h-4 text-secondary" />
               Friend Requests
             </h3>

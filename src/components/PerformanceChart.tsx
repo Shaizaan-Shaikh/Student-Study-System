@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { cn } from '../lib/utils';
 
-const data = [
+const yearlyData = [
   { name: 'Jan', rating: 1200 },
   { name: 'Feb', rating: 1350 },
   { name: 'Mar', rating: 1300 },
@@ -16,23 +17,73 @@ const data = [
   { name: 'Dec', rating: 2200 },
 ];
 
+const sixMonthData = yearlyData.slice(-6);
+
+const monthlyData = [
+  { name: '1', rating: 1450 },
+  { name: '5', rating: 1480 },
+  { name: '10', rating: 1520 },
+  { name: '15', rating: 1500 },
+  { name: '20', rating: 1550 },
+  { name: '25', rating: 1580 },
+  { name: '30', rating: 1600 },
+];
+
 export const PerformanceChart: React.FC = () => {
+  const [timeframe, setTimeframe] = useState<'monthly' | '6months' | 'yearly'>('6months');
+
+  const getData = () => {
+    switch (timeframe) {
+      case 'monthly': return monthlyData;
+      case '6months': return sixMonthData;
+      case 'yearly': return yearlyData;
+      default: return sixMonthData;
+    }
+  };
+
+  const currentData = getData();
+
   return (
     <div className="bg-surface-container-low p-8 rounded-xl">
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
         <div>
           <h2 className="text-xl font-headline font-bold text-slate-200">Performance Over Time</h2>
           <p className="text-slate-500 text-xs mt-1">Consolidated rating trend across all competitive platforms</p>
         </div>
         <div className="flex bg-surface-container-highest rounded-full p-1">
-          <button className="px-4 py-1.5 rounded-full text-[10px] font-bold bg-primary text-on-primary">6 MONTHS</button>
-          <button className="px-4 py-1.5 rounded-full text-[10px] font-bold text-slate-400 hover:text-slate-200 transition-colors">1 YEAR</button>
+          <button 
+            onClick={() => setTimeframe('monthly')}
+            className={cn(
+              "px-4 py-1.5 rounded-full text-[10px] font-bold transition-all",
+              timeframe === 'monthly' ? "bg-primary text-on-primary" : "text-slate-400 hover:text-slate-200"
+            )}
+          >
+            MONTHLY
+          </button>
+          <button 
+            onClick={() => setTimeframe('6months')}
+            className={cn(
+              "px-4 py-1.5 rounded-full text-[10px] font-bold transition-all",
+              timeframe === '6months' ? "bg-primary text-on-primary" : "text-slate-400 hover:text-slate-200"
+            )}
+          >
+            6 MONTHS
+          </button>
+          <button 
+            onClick={() => setTimeframe('yearly')}
+            className={cn(
+              "px-4 py-1.5 rounded-full text-[10px] font-bold transition-all",
+              timeframe === 'yearly' ? "bg-primary text-on-primary" : "text-slate-400 hover:text-slate-200"
+            )}
+          >
+            YEARLY
+          </button>
         </div>
       </div>
       
       <div className="h-64 w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data}>
+          <BarChart data={currentData}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#464554" opacity={0.2} />
             <XAxis 
               dataKey="name" 
@@ -56,10 +107,10 @@ export const PerformanceChart: React.FC = () => {
               itemStyle={{ color: '#c0c1ff' }}
             />
             <Bar dataKey="rating" radius={[4, 4, 0, 0]}>
-              {data.map((entry, index) => (
+              {currentData.map((entry, index) => (
                 <Cell 
                   key={`cell-${index}`} 
-                  fill={index === data.length - 1 ? '#c0c1ff' : '#c0c1ff33'} 
+                  fill={index === currentData.length - 1 ? '#c0c1ff' : '#c0c1ff33'} 
                   className="hover:fill-primary transition-all duration-300"
                 />
               ))}
