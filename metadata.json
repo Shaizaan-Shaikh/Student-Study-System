@@ -1,0 +1,5 @@
+{
+  "name": "Observatory Command Center",
+  "description": "A high-tech engineering dashboard for tracking competitive programming progress across LeetCode, Codeforces, and CodeChef.",
+  "requestFramePermissions": []
+}

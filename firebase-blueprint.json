@@ -1,0 +1,59 @@
+{
+  "entities": {
+    "UserPublic": {
+      "title": "Public User Profile",
+      "description": "Information visible to all users for the leaderboard and profile viewing.",
+      "type": "object",
+      "properties": {
+        "displayName": { "type": "string", "description": "User's display name" },
+        "photoURL": { "type": "string", "description": "User's avatar URL" },
+        "totalSolved": { "type": "integer", "description": "Total problems solved across all platforms" },
+        "rating": { "type": "integer", "description": "Consolidated rating" },
+        "streak": { "type": "integer", "description": "Current coding streak in days" },
+        "level": { "type": "integer", "description": "User's calculated level" },
+        "role": { "type": "string", "enum": ["user", "admin"], "description": "User's role in the system" },
+        "lastSynced": { "type": "string", "format": "date-time", "description": "Last time stats were synced" }
+      },
+      "required": ["displayName", "totalSolved", "rating"]
+    },
+    "UserPrivate": {
+      "title": "Private User Data",
+      "description": "Sensitive information only accessible by the user themselves.",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "format": "email", "description": "User's email address" },
+        "leetcodeUsername": { "type": "string", "description": "User's LeetCode username" },
+        "codeforcesUsername": { "type": "string", "description": "User's Codeforces username" },
+        "codechefUsername": { "type": "string", "description": "User's CodeChef username" }
+      },
+      "required": ["email"]
+    },
+    "Goal": {
+      "title": "User Goal",
+      "description": "A specific coding goal for the user.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "Goal description" },
+        "target": { "type": "integer", "description": "Target number of problems" },
+        "current": { "type": "integer", "description": "Current progress" },
+        "completed": { "type": "boolean", "description": "Whether the goal is achieved" },
+        "deadline": { "type": "string", "format": "date-time", "description": "When the goal expires" }
+      },
+      "required": ["title", "target", "current"]
+    }
+  },
+  "firestore": {
+    "/users_public/{userId}": {
+      "schema": "UserPublic",
+      "description": "Publicly accessible user profiles for the leaderboard."
+    },
+    "/users_private/{userId}": {
+      "schema": "UserPrivate",
+      "description": "Private user settings and platform usernames."
+    },
+    "/users_private/{userId}/goals/{goalId}": {
+      "schema": "Goal",
+      "description": "User-specific coding goals."
+    }
+  }
+}
