@@ -83,7 +83,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({ onNavigate }) => {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-[100]">
+    <div className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-[100] flex flex-col items-end">
       <AnimatePresence>
         {!isOpen && (
           <motion.button
@@ -91,9 +91,9 @@ export const ChatBot: React.FC<ChatBotProps> = ({ onNavigate }) => {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
             onClick={() => setIsOpen(true)}
-            className="w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg shadow-primary/20 flex items-center justify-center hover:scale-110 transition-transform group"
+            className="w-12 h-12 md:w-14 md:h-14 bg-primary text-on-primary rounded-full shadow-lg shadow-primary/20 flex items-center justify-center hover:scale-110 transition-transform group"
           >
-            <MessageCircle className="w-6 h-6 group-hover:rotate-12 transition-transform" />
+            <MessageCircle className="w-5 h-5 md:w-6 md:h-6 group-hover:rotate-12 transition-transform" />
           </motion.button>
         )}
       </AnimatePresence>
@@ -106,7 +106,9 @@ export const ChatBot: React.FC<ChatBotProps> = ({ onNavigate }) => {
             exit={{ y: 100, opacity: 0, scale: 0.9 }}
             className={cn(
               "bg-surface-container-low border border-outline-variant/20 rounded-2xl shadow-2xl flex flex-col overflow-hidden transition-all duration-300",
-              isMinimized ? "h-16 w-64" : "h-[500px] w-[380px]"
+              isMinimized 
+                ? "h-16 w-64" 
+                : "h-[500px] max-h-[calc(100vh-6rem)] w-[calc(100vw-2rem)] sm:w-[380px]"
             )}
           >
             {/* Header */}
